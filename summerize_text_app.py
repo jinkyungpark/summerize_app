@@ -1,13 +1,6 @@
 import streamlit as st
 from openai import OpenAI
 
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# client = OpenAI()
-
-
 # 기능 구현
 def askGpt(prompt, apikey):
     """
