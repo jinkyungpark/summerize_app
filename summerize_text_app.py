@@ -1,14 +1,19 @@
 import streamlit as st
 from openai import OpenAI
 
-client = OpenAI()
+# from dotenv import load_dotenv
+
+# load_dotenv()
+
+# client = OpenAI()
 
 
 # 기능 구현
-def askGpt(prompt):
+def askGpt(prompt, apikey):
     """
     GPT-4o 에게 질문한 후 답변 리턴
     """
+    client = OpenAI(api_key=apikey)
     message_prompt = [{"role": "system", "content": prompt}]
     response = client.chat.completions.create(model="gpt-4o", messages=message_prompt)
     gpt_response = response.choices[0].message.content
@@ -19,6 +24,10 @@ def askGpt(prompt):
 def main():
     st.set_page_config(page_title="요약 프로그램")
 
+    # session state 초기화
+    if "OPENAI_API" not in st.session_state:
+        st.session_state["OPENAI_API"] = ""
+
     with st.sidebar:
         # open ai api키 입력받기
         open_apikey = st.text_input(
@@ -28,7 +37,7 @@ def main():
             type="password",
         )
         if open_apikey:
-            client.api_key = open_apikey
+            st.session_state["OPENAI_API"] = open_apikey
         st.markdown("---")
 
     st.header("📃요약 프로그램")
@@ -47,7 +56,7 @@ def main():
         - Use the format of a bullet point.
     -text : {text}
     """
-        st.info(askGpt(prompt))
+        st.info(askGpt(prompt, st.session_state["OPENAI_API"]))
 
 
 if __name__ == "__main__":
